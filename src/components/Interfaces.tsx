@@ -2,7 +2,7 @@ export interface GroceryItem {
     id: number;
     name: string;
     purchaseDate: string;
-    duration: number;
+    itemDuration: number;
   }
 
 export interface Category {

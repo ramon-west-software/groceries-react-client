@@ -18,9 +18,6 @@ const defaultStorageArea: StorageArea = {
 // HTTP constants, todo: move to a property file
 const url = "http://192.168.0.135:8080/api/v1/users/3";
 const loginurl = "http://192.168.0.135:8080/api/v1/login";
-const username = "Rex";
-const password = "pass";
-const basicAuthHeader = "Basic " + btoa(username + ":" + password);
 
 const Home: React.FC = () => {
   // Component state variables

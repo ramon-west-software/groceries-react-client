@@ -15,7 +15,7 @@ const GroceryItemConponent: FC<GroceryItemsProps> = ({ data }) => {
             <ul key={index}>
               <li key={index}>
                 {item.name} - Purchased {item.purchaseDate} - Good for{" "}
-                {item.duration} days since purchase
+                {item.itemDuration} days since purchase
               </li>
             </ul>
           ))}

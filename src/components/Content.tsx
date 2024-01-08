@@ -14,9 +14,9 @@ const Content: FC<ContentProps> = ({ data }) => {
       {data && Array.isArray(data) && data.map((category, index) => (
         <div className="main-card" key={index}>
           <div className="main-card-title"> {category.name}</div>
-          {/* <div className="main-card-text"> */}
+          <div className="main-card-text">
             <GroceryItemConponent data={category.groceryItems}></GroceryItemConponent>
-          {/* </div> */}
+          </div>
         </div>
       ))}
     </>
