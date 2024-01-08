@@ -1,0 +1,259 @@
+/* styles.css */
+body {
+  margin: 0;
+  padding: 0;
+  /* display: flex; */
+  /* height: 100px; */
+  /* overflow: hidden; */
+  background-color: #f7f5eb;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  /* align-items: space-around;
+  gap: 5em; */
+  /* flex-direction: column; */
+  /* flex: 1; */
+  /* overflow: hidden; */
+}
+
+.header {
+  position: relative;
+  /* position: sticky; */
+  top: 0px;
+  background-color: #d5e3e8;
+  color: #faedcb;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+header, h1 {
+  text-shadow: 2px 2px #333;
+  padding-left: 2%;
+  width: 90%;
+}
+
+.toggle-btn {
+  background-color: #d5e3e8;
+  color: azure;
+  padding: 10px 20px;
+  cursor: pointer;
+  top: 20px;
+  left: 20px;
+  z-index: 1;
+  text-shadow: 2px 2px #333
+}
+.bar1,
+.bar2,
+.bar3 {
+  width: 35px;
+  height: 5px;
+  background-color: #a0c3d2;
+  margin: 6px 0;
+  transition: 0.4s;
+  border-radius: 2px;
+}
+
+.change .bar1 {
+  transform: translate(0, 11px) rotate(-45deg);
+}
+
+.change .bar2 {
+  opacity: 0;
+}
+
+.change .bar3 {
+  transform: translate(0, -11px) rotate(45deg);
+}
+
+/* Fridge Icon */
+.fridge-icon {
+  width: 30%;
+  height: 80%;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 10px;
+  position: relative;
+}
+
+.fridge-icon:before {
+  content: '';
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 2%;
+  background-color: #000000;
+}
+/* end Fridge Icon */
+/* Freezer Icon */
+.freezer-icon {
+  width: 50%;
+  height: 60%;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 10px;
+  position: relative;
+}
+
+.freezer-icon:before {
+  content: '';
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 2%;
+  background-color: #000000;
+}
+/* end Freezer Icon */
+
+.sidebar {
+  /* float: left;
+  position: relative;
+  z-index: 999; */
+  /*  */
+  background-color: #eac7c7;
+  /* color: #161515; */
+  width: 150px;
+  position: fixed;
+  height: 100%;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-y: auto;
+}
+
+.sidebar.show {
+  transform: translateX(0);
+}
+
+
+/* .sidebar-container {
+  display: flex;
+  flex-direction: column;
+} */
+
+
+.sidebar-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-content: center;
+  width: 80%;
+  height: 120px;
+  margin: 10%;
+  background-color: #f7d9c4;
+  color: azure;
+  text-shadow: 2px 2px #333;
+  border-radius: 25px;
+}
+
+.card-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  width: auto;
+  height: 20%;
+  bottom: auto;
+  border: #161515;
+}
+
+.card-text {
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  height: 60%;
+  font-size: small;
+
+}
+
+.card-footer {
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 20%;
+  font-size: small;
+}
+
+.main-content {
+  /*  */
+  /* position: relative; */
+  /*  */
+  display: grid;
+  grid-template-columns: auto auto auto;
+  /* display: grid;
+  flex-wrap: wrap;
+  justify-content: start;
+  align-content: space-evenly; */
+  /* flex: 1; */
+  padding: 2%;
+  /* margin-left: 0; */
+  transition: margin-left 0.3s ease-in-out;
+  overflow-y: auto;
+}
+
+.main-content.show {
+  margin-left: 150px; /* Show the content beside the side panel */
+}
+
+.main-card {
+  /* display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-content: center; */
+  width: 98%;
+  height: 98%;
+  margin: 2%;
+  /* padding: 2%; */
+  background-color: #f7d9c4;
+  border-radius: 25px;
+}
+
+.main-card-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-content: center;
+  padding-left: 5%;
+  padding-top: 5%;
+  width: auto;
+  height: 5%;
+  bottom: auto;
+  border: #161515;
+  font-size: large;
+}
+
+.main-card-text {
+  /* display:flex;
+  flex-wrap: wrap;
+  flex-direction: column; */
+  justify-content: center;
+  align-items: start;
+  padding-left: 2%;
+  width: 80%;
+  height: 80%;
+  font-size: small;
+}
+
+.main-card-footer {
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 20%;
+  font-size: small;
+}
+
