@@ -6,6 +6,19 @@ body {
   font-family: "Chalkboard SE", sans-serif;
 }
 
+.login-container {
+  position: fixed;
+  top: 30%;
+  bottom: 30%;
+  left: 35%;
+  right: 40%;
+  min-width: 150px;
+  min-height: 150px;
+  align-content: center;
+  justify-content: center;
+}
+
+
 .container {
   width: 99%;
   display: flex;
@@ -212,9 +225,6 @@ h1 {
 }
 
 .main-card-text {
-  /* display:flex;
-  flex-wrap: wrap;
-  flex-direction: column; */
   justify-content: center;
   align-items: start;
   padding-left: 2%;
