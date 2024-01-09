@@ -16,7 +16,7 @@ const defaultStorageArea: StorageArea = {
 };
 
 // HTTP constants, todo: move to a property file
-const url = "http://192.168.0.135:8080/api/v1/users/3";
+const url = "http://localhost:8080/api/v1/users/3";
 
 interface HomeProps {
   token: string | null;

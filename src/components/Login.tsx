@@ -13,7 +13,7 @@ const Login: React.FC<LoginProps> = ({ setToken }) => {
   const handleLogin = async () => {
     try {
       // Call your server endpoint to authenticate
-      const response = await fetch('http://192.168.0.135:8080/api/v1/login', {
+      const response = await fetch('http://localhost:8080/api/v1/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
