@@ -2,29 +2,21 @@
 body {
   margin: 0;
   padding: 0;
-  /* display: flex; */
-  /* height: 100px; */
-  /* overflow: hidden; */
   background-color: #f7f5eb;
   font-family: "Chalkboard SE", sans-serif;
 }
 
 .container {
+  width: 99%;
   display: flex;
-  flex-wrap: wrap;
-  /* align-items: space-around;
-  gap: 5em; */
-  /* flex-direction: column; */
-  /* flex: 1; */
-  /* overflow: hidden; */
+  flex-direction: row;
+  overflow-y: auto;
 }
 
 .header {
   position: relative;
-  /* position: sticky; */
   top: 0px;
   background-color: #d5e3e8;
-  /* background-color: #10a7dd; */
   padding: 10px 20px;
   display: flex;
   justify-content: flex-start;
@@ -33,14 +25,13 @@ body {
   border: 2px solid #2c3e50;
 }
 
-header, h1 {
-  /* text-shadow: 2px 2px 2px #faedcb; */
+.header,
+h1 {
   padding-left: 2%;
   width: 90%;
 }
 
 .toggle-btn {
-  /* background-color: #d5e3e8; */
   background-color: #60b7d6;
   color: azure;
   padding: 10px 20px;
@@ -56,12 +47,10 @@ header, h1 {
 .bar3 {
   width: 35px;
   height: 5px;
-  /* background-color: #a0c3d2; */
   background-color: #2c3e50;
   margin: 6px 0;
   transition: 0.4s;
   border-radius: 5px;
-  /* border: 2px solid #2c3e50; */
 }
 
 .change .bar1 {
@@ -87,7 +76,7 @@ header, h1 {
 }
 
 .fridge-icon:before {
-  content: '';
+  content: "";
   position: absolute;
   top: 40%;
   left: 50%;
@@ -108,7 +97,7 @@ header, h1 {
 }
 
 .freezer-icon:before {
-  content: '';
+  content: "";
   position: absolute;
   top: 30%;
   left: 50%;
@@ -121,27 +110,18 @@ header, h1 {
 
 .sidebar {
   background-color: #ffed86;
-  width: 150px;
-  position: fixed;
-  height: 100%;
+  min-width: 150px;
   transition: transform 0.3s ease-in-out;
   transform: translateX(-100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow-y: auto;
+  overflow-y: auto; /* Use 'auto' instead of 'scroll' */
 }
 
 .sidebar.show {
   transform: translateX(0);
 }
-
-
-/* .sidebar-container {
-  display: flex;
-  flex-direction: column;
-} */
-
 
 .sidebar-card {
   display: flex;
@@ -151,9 +131,7 @@ header, h1 {
   width: 80%;
   height: 120px;
   margin: 10%;
-  /* background-color: #f7d9c4; */
   background-color: #e9c43c;
-  /* text-shadow: 2px 2px 2px #faedcb; */
   border-radius: 25px;
   border: 2px solid #2c3e50;
 }
@@ -170,18 +148,17 @@ header, h1 {
 }
 
 .card-text {
-  display:flex;
+  display: flex;
   flex-direction: row;
   justify-content: center;
   align-content: center;
   width: 100%;
   height: 60%;
   font-size: small;
-
 }
 
 .card-footer {
-  display:flex;
+  display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -192,26 +169,35 @@ header, h1 {
 
 .main-content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  margin-left: -150px;
   padding: 2%;
   overflow-y: auto;
+  transition: margin-left 0.3s ease-in-out;
 }
 
 .main-content.show {
-  margin-left: 150px; /* Show the content beside the side panel */
+  margin-left: 0px; /* Show the content beside the side panel */
 }
 
 .main-card {
-  /* display: flex;
+  display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  align-content: center; */
+  justify-content: center;
+  align-content: center;
   width: 98%;
   height: 98%;
   margin: 2%;
-  /* padding: 2%; */
   background-color: #f7d9c4;
+  border-radius: 25px;
+  border: 2px solid #2c3e50;
+}
+
+.main-card-header {
+  width: 102%;
+  height: 102%;
+  background-color: #f6a367;
   border-radius: 25px;
   border: 2px solid #2c3e50;
 }
@@ -219,13 +205,8 @@ header, h1 {
 .main-card-title {
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: center;
   align-content: center;
-  padding-left: 2%;
-  padding-top: 2%;
-  width: auto;
-  height: 5%;
-  bottom: auto;
   border: #161515;
   font-size: large;
 }
@@ -243,7 +224,7 @@ header, h1 {
 }
 
 .main-card-footer {
-  display:flex;
+  display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -252,3 +233,12 @@ header, h1 {
   font-size: small;
 }
 
+.create-item-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* margin-left: -150px; */
+  padding: 2%;
+  overflow-y: auto;
+  /* transition: margin-left 0.3s ease-in-out; */
+}
