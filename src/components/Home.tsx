@@ -17,15 +17,17 @@ const defaultStorageArea: StorageArea = {
 
 // HTTP constants, todo: move to a property file
 const url = "http://192.168.0.135:8080/api/v1/users/3";
-const loginurl = "http://192.168.0.135:8080/api/v1/login";
 
-const Home: React.FC = () => {
+interface HomeProps {
+  token: string | null;
+}
+
+const Home: React.FC<HomeProps> = ({ token }) => {
   // Component state variables
-  const [token, setToken] = useState('');
   const [data, setData] = useState<UserData>(defaultData);
   const [selectedArea, setSelectedArea] =
     useState<StorageArea>(defaultStorageArea);
-  const [selectedView, setSelectedView] = useState("Log in"); // Default view
+  const [selectedView, setSelectedView] = useState("Groceries"); // Default view
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Functions to handle state changes
@@ -47,39 +49,16 @@ const Home: React.FC = () => {
     );
   };
 
-  // 1st useEffect, gets JWT token
-  // TODO: move into LOGIN component, 
-  useEffect(() => {
-    const login = async () => {
-      const loginOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'User-Agent': 'insomnia/8.4.5' },
-        body: JSON.stringify({ username: 'Rex', password: 'password' })
-      };
-
-      try {
-        const response = await fetch(loginurl, loginOptions);
-        const data = await response.json();
-        setToken(data.token); // Save the token to state
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    login(); // Trigger the login function when the component is mounted
-  }, []); // The empty dependency array ensures that this effect runs only once, equivalent to componentDidMount
- 
-  // 2nd useEffect triggered when token is changed
   useEffect(() => {
     const handleRequest = async () => {
       // Check if the token is available before making the request
       if (token) {
         const getRequestOptions = {
-          method: 'GET',
+          method: "GET",
           headers: {
             // 'User-Agent': 'insomnia/8.4.5',
-            Authorization: `${token}` // Use the token obtained from login
-          }
+            Authorization: `${token}`, // Use the token obtained from login
+          },
         };
 
         try {
@@ -95,16 +74,15 @@ const Home: React.FC = () => {
     handleRequest(); // Trigger the handleRequest function when the component is mounted or when the token changes
   }, [token]); // The effect depends on the token, so it will run when the token changes
 
-
   return (
     <>
       <div className="header">
         <button className="toggle-btn" onClick={toggleSidebar}>
           <MenuToggle />
         </button>
-        <h1>My Kitchen - {selectedView}</h1>
+        <h1>{selectedView}</h1>
       </div>
-      <div className="">
+      <div className="container">
         <div className={`sidebar ${isSidebarOpen ? "show" : ""}`}>
           {data &&
             data.storageAreas.map((storageArea, index) => (
@@ -124,17 +102,21 @@ const Home: React.FC = () => {
             ))}
         </div>
         <div className={`main-content ${isSidebarOpen ? "show" : ""}`}>
-          {/* Render the content based on the selected view  */}
-          {
-            <Content
-              data={
-                selectedArea !== undefined
-                  ? selectedArea.categories
-                  : defaultStorageArea.categories
-              }
-            />
-          }
+          <div className="main-card">
+            {/* Render the content based on the selected view  */}
+            {
+              <Content
+                data={
+                  selectedArea !== undefined
+                    ? selectedArea.categories
+                    : defaultStorageArea.categories
+                }
+              />
+            }
+          </div>
+          
         </div>
+        <div className="create-item-container">placement holder for create items</div>
       </div>
     </>
   );
