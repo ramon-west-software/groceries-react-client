@@ -91,18 +91,18 @@ const Home: React.FC<HomeProps> = ({ token }) => {
                 className="sidebar-card"
                 onClick={() => handleViewSelect(storageArea.name)}
               >
-                <div className="card-title"></div>
-                <div className="card-text">
+                <div className="sidebar-card-title"></div>
+                <div className="sidebar-card-text">
                   <div className="fridge-icon"></div>
                 </div>
-                <div className="card-footer">
+                <div className="sidebar-card-footer">
                   <h3>{storageArea.name}</h3>
                 </div>
               </div>
             ))}
         </div>
         <div className={`main-content ${isSidebarOpen ? "show" : ""}`}>
-          <div className="main-card">
+          <div>
             {/* Render the content based on the selected view  */}
             {
               <Content
