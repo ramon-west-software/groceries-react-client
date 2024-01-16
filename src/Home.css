@@ -29,6 +29,7 @@ body {
   align-content: center;
   align-items: center;
   max-width: 500px;
+  min-width:300px
 }
 
 .login-form {
@@ -36,16 +37,11 @@ body {
   flex-direction: column;
   padding: 5%;
   align-items: center;
-  /* align-content: center; */
-  /* justify-items: center; */
-  /* justify-content: center; */
 }
 
 .login-form-input {
   justify-content: center;
   align-items: start;
-  width: 95%;
-  height: 100%;
   font-family: "Chalkboard SE", sans-serif;
   font-size: small;
   border-radius: 5px;
@@ -59,7 +55,6 @@ body {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  /* border-radius: 10px; */
   border: 2px solid #2c3e50;
 }
 
