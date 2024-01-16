@@ -56,7 +56,6 @@ const Home: React.FC<HomeProps> = ({ token }) => {
         const getRequestOptions = {
           method: "GET",
           headers: {
-            // 'User-Agent': 'insomnia/8.4.5',
             Authorization: `${token}`, // Use the token obtained from login
           },
         };
