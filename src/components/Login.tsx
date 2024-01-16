@@ -42,7 +42,7 @@ const Login: React.FC<LoginProps> = ({ setToken }) => {
 
   return (
     <div className="login-container">
-      <div className="main-card-container">
+      <div className="login-card-container">
         <div className="main-card-header">
           <div className="main-card-title">Login</div>
         </div>

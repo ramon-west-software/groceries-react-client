@@ -23,6 +23,14 @@ body {
   padding-right: 25%;
 }
 
+.login-card-container {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  max-width: 500px;
+}
+
 .login-form {
   display: flex;
   flex-direction: column;
@@ -226,8 +234,6 @@ h1 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 10px;
-  /* align-content: center; */
-  /* align-items: center; */
   width: 100%;
 }
 
