@@ -102,7 +102,7 @@ const Home: React.FC<HomeProps> = ({ token }) => {
             ))}
         </div>
         <div className={`main-content ${isSidebarOpen ? "show" : ""}`}>
-          <div>
+          <div className="main-card-container">
             {/* Render the content based on the selected view  */}
             {
               <Content

@@ -9,8 +9,9 @@ interface AppProps {}
 const App: React.FC<AppProps> = () => {
   const [token, setToken] = useState<string | null>(() => {
     // Retrieve the token from localStorage on component mount
-    return localStorage.getItem('token');
-  });
+    const storedToken = localStorage.getItem('token');
+    return storedToken ? storedToken : null;
+});
 
   // Use useEffect to update localStorage when the token changes
   useEffect(() => {
@@ -35,6 +36,7 @@ const App: React.FC<AppProps> = () => {
           }
         />
         <Route path="/home" element={<Home token={token}/>} />
+        <Route path="/login" element={<Login setToken={(newToken) => setToken(newToken)} />} />
       </Routes>
     </Router>
   );
