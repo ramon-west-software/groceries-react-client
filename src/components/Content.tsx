@@ -13,21 +13,21 @@ const Content: FC<ContentProps> = ({ data }) => {
         Array.isArray(data) &&
         data.map((category, index) => (
           <div className="main-card" key={index}>
-          
             <div className="main-card-header">
               <div className="main-card-title"> {category.name}</div>
             </div>
-            {category.groceryItems && (
               <div className="main-card-text-container">
                 <GroceryItemConponent data={category.groceryItems} />
               </div>
-            )}
-            
-           </div>
+          </div>
         ))}
+        { <div className="main-card" key={-1}>
+            <div className="main-card-header">
+              <div className="main-card-title"> Add Category</div>
+            </div>
+          </div>}
     </>
   );
 };
-
 
 export default Content;

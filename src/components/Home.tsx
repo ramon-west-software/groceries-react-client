@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import MenuToggle from "./MenuToggle";
 import Content from "./Content";
 import { StorageArea, UserData } from "./Interfaces";
+import CreateItems from "./CreateItems";
 
 // default empty intefaces
 const defaultData: UserData = {
@@ -99,6 +100,19 @@ const Home: React.FC<HomeProps> = ({ token }) => {
                 </div>
               </div>
             ))}
+            {<div
+                key={-1}
+                className="sidebar-card"
+                onClick={() => console.log("New Storage!")}
+              >
+                <div className="sidebar-card-title"></div>
+                <div className="sidebar-card-text">
+                  <div className="fridge-icon"></div>
+                </div>
+                <div className="sidebar-card-footer">
+                  <h3>Add Storage Area</h3>
+                </div>
+              </div>}
         </div>
         <div className={`main-content ${isSidebarOpen ? "show" : ""}`}>
           <div className="main-card-container">
@@ -113,9 +127,10 @@ const Home: React.FC<HomeProps> = ({ token }) => {
               />
             }
           </div>
-          
         </div>
-        <div className="create-item-container">placement holder for create items</div>
+        <div className="create-item-container">
+          <CreateItems authToken={token || ""}/>
+        </div>
       </div>
     </>
   );

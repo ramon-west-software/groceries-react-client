@@ -10,6 +10,7 @@ const App: React.FC<AppProps> = () => {
   const [token, setToken] = useState<string | null>(() => {
     // Retrieve the token from localStorage on component mount
     const storedToken = localStorage.getItem('token');
+    console.log(storedToken);
     return storedToken ? storedToken : null;
 });
 

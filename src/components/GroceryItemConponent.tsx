@@ -18,13 +18,20 @@ const GroceryItemConponent: FC<GroceryItemsProps> = ({ data }) => {
             return (
               <ul key={index}>
                 <li key={index}>
-                  {item.name} <br />
+                  {item.id} - {item.name} <br />
                   Purchased: {formattedDate} <br />
                   Expires: {item.itemDuration} days after purchase.
                 </li>
               </ul>
             );
           })}
+          {
+              <ul key={-1}>
+                <li key={-1}>
+                  Add Grocery Item
+                </li>
+              </ul>
+            }
       </div>
     </>
   );
