@@ -1,28 +1,37 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
-import { UserData, StorageArea, Category, GroceryItem } from "./Interfaces";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { UserData, GroceryItem } from "./Interfaces";
 
-// TODO: USE THIS FOR ADD/EDIT STORAGE, CATEGORY, AND ITEMS
 interface CreateItemsProps {
   authToken: string;
+  userId: string;
+  groceryItem?: GroceryItem | null;
+  triggerRefetch: () => void;
+  onCancel: () => void;
 }
 
-// TODO: add jwt token to props, add 'data' to props for data.userId, add triggerRefetch method to props to retrigger useEffect
-
-const STORAGE_ENDPOINT = "http://localhost:8080/api/v1/storageAreas";
-const CATEGORY_ENDPOINT = "http://localhost:8080/api/v1/categories";
 const ITEM_ENDPOINT = "http://localhost:8080/api/v1/items";
 
-const CreateItems: React.FC<CreateItemsProps> = ({ authToken }) => {
-  const [storageName, setStorageName] = useState<string>("");
-  const [categoryName, setCategoryName] = useState<string>("");
-  const [itemName, setItemName] = useState<string>("");
-  const [purchaseDate, setPurchaseDate] = useState<string>("");
-  const [itemDuration, setItemDuration] = useState<string>("");
+const CreateItems: React.FC<CreateItemsProps> = ({
+  authToken,
+  userId,
+  groceryItem,
+  triggerRefetch,
+  onCancel,
+}) => {
+  const [itemId, setItemId] = useState<number | null>(groceryItem?.id || null);
+  const [itemName, setItemName] = useState<string>(groceryItem?.name || "");
+  const [purchaseDate, setPurchaseDate] = useState<string>(
+    groceryItem?.purchaseDate || ""
+  );
+  const [itemDuration, setItemDuration] = useState<string>(
+    groceryItem?.itemDuration.toString() || ""
+  );
+  const [isDataReady, setIsDataReady] = useState<boolean>(false);
 
-  const createResource = async (url: string, data: object) => {
+  const createResource = async (url: string, data: object, method: string) => {
     try {
       const response = await fetch(url, {
-        method: "POST",
+        method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
@@ -33,88 +42,54 @@ const CreateItems: React.FC<CreateItemsProps> = ({ authToken }) => {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
-          `Failed to create resource: ${response.status} - ${errorData.message}`
+          `Failed to create/update resource: ${response.status} - ${errorData.message}`
         );
       }
 
       const responseData = await response.json();
-      console.log("Resource created:", responseData);
+      console.log("Resource created/updated:", responseData);
+      triggerRefetch();
+      onCancel();
     } catch (error) {
-      console.error("Error creating resource:", (error as Error).message);
+      console.error("Error creating/updating resource:", (error as Error).message);
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (storageName && !categoryName && !itemName) {
+    const data = {
+      userId,
+      itemId: itemId,
+      name: itemName,
+      itemDuration: parseInt(itemDuration, 10),
+      purchaseDate,
+    };
 
-      const storageData = {
-        userId: 3,
-        name: storageName,
-      };
-
-      console.log(storageData);
-      // await createResource(STORAGE_ENDPOINT, storageData);
-    } else if (storageName && categoryName && !itemName) {
-      const categoryData = {
-        userId: 3,
-        storageId: 4,
-        name: categoryName,
-      };
-      console.log(categoryData);
-      // await createResource(CATEGORY_ENDPOINT, categoryData);
-    } else if (storageName && categoryName && itemName) {
-      const groceryItemData = {
-        userId: 3,
-        storageId: 4,
-        categoryId: 18,
-        name: itemName,
-        itemDuration: parseInt(itemDuration, 10),
-        purchaseDate,
-      };
-      console.log(groceryItemData);
-      // await createResource(ITEM_ENDPOINT, groceryItemData);
+    if (groceryItem !== null && groceryItem !== undefined) {
+      const updatedItemData = { ...groceryItem, ...data };
+      await createResource(
+        `${ITEM_ENDPOINT}/${groceryItem.id}`,
+        updatedItemData,
+        "PUT"
+      );
     } else {
-      console.error("Invalid input");
+      await createResource(ITEM_ENDPOINT, data, "POST");
     }
   };
 
-  type DataType = "StorageArea" | "Category" | "GroceryItem";
-
-  function findItemByName(
-    userData: UserData,
-    itemName: string,
-    dataType: DataType
-  ): StorageArea | Category | GroceryItem | null {
-    
-      if (userData && userData.storageAreas) {
-        for (const storageArea of userData.storageAreas) {
-          if (storageArea.name === itemName && dataType === "StorageArea") {
-            return storageArea;
-          }
-
-          if (storageArea.categories) {
-            for (const category of storageArea.categories) {
-              if (category.name === itemName && dataType === "Category") {
-                return category;
-              }
-
-              if (category.groceryItems && dataType === "GroceryItem") {
-                const groceryItem = category.groceryItems.find(
-                  (item) => item.name === itemName
-                );
-                if (groceryItem) {
-                  return groceryItem;
-                }
-              
-            }
-          }
-        }
-      }
+  useEffect(() => {
+    if (groceryItem) {
+      setItemId(groceryItem.id);
+      setItemName(groceryItem.name);
+      setPurchaseDate(groceryItem.purchaseDate);
+      setItemDuration(groceryItem.itemDuration.toString());
+      setIsDataReady(true);
     }
+  }, [groceryItem]);
 
-    return null;
+  if (!isDataReady) {
+    return null; // or loading state
   }
 
   return (
@@ -125,32 +100,6 @@ const CreateItems: React.FC<CreateItemsProps> = ({ authToken }) => {
         </div>
         <div className="main-card-text-container">
           <form className="login-form" onSubmit={handleSubmit}>
-            <label>
-              Storage Name:
-              <input
-                type="text"
-                className="login-form-input"
-                value={storageName}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setStorageName(e.target.value)
-                }
-              />
-            </label>
-            <br />
-
-            <label>
-              Category Name:
-              <input
-                type="text"
-                className="login-form-input"
-                value={categoryName}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setCategoryName(e.target.value)
-                }
-              />
-            </label>
-            <br />
-
             <label>
               Item Name:
               <input
@@ -191,7 +140,11 @@ const CreateItems: React.FC<CreateItemsProps> = ({ authToken }) => {
             <br />
 
             <button type="submit" className="login-form-input">
-              Submit
+              {groceryItem ? "Update" : "Submit"}
+            </button>
+
+            <button type="button" onClick={onCancel} className="login-form-input">
+              Cancel
             </button>
           </form>
         </div>
