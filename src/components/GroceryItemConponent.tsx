@@ -22,10 +22,17 @@ const GroceryItemConponent: FC<GroceryItemsProps> = ({
             return (
               <ul
                 key={index}
-                onClick={() => handleGroceryItemClick(category.id, item)}
+                onClick={() =>
+                  handleGroceryItemClick(category.id, {
+                    id: item.id,
+                    name: item.name,
+                    purchaseDate: item.purchaseDate,
+                    itemDuration: item.itemDuration,
+                  })
+                }
               >
                 <li key={index}>
-                  {item.id} - {item.name} <br />
+                  {item.name} <br />
                   Purchased: {formattedDate} <br />
                   Expires: {item.itemDuration} days after purchase.
                 </li>
@@ -38,7 +45,7 @@ const GroceryItemConponent: FC<GroceryItemsProps> = ({
               id: -1,
               name: "",
               purchaseDate: "",
-              itemDuration: -1,
+              itemDuration: 0,
             })
           }
         >

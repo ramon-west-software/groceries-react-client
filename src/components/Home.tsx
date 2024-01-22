@@ -3,6 +3,7 @@ import MenuToggle from "./MenuToggle";
 import Content from "./Content";
 import CreateItems from "./CreateItems";
 import { GroceryItem, StorageArea, UserData } from "./Interfaces";
+import { useNavigate } from "react-router-dom";
 
 const defaultData: UserData = {
   id: 0,
@@ -15,7 +16,10 @@ const defaultStorageArea: StorageArea = {
   categories: [{ id: -1, name: "", groceryItems: [] }],
 };
 
-const url = "http://localhost:8080/api/v1/users/3";
+const url = "http://localhost:8080";
+const userEndpoint = "/api/v1/users/";
+const userId = "3";
+const defaultView = "Groceries";
 
 interface HomeProps {
   token: string | null;
@@ -23,12 +27,17 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ token }) => {
   // App states
+  const navigate = useNavigate();
   const [data, setData] = useState<UserData>(defaultData);
+  // Sidebar state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // Main content view state
+  const [selectedView, setSelectedView] = useState(defaultView);
+  // CreateItem vs GroceryList state
+  const [showCreateItem, setShowCreateItem] = useState(false);
+  // Selected components to edit/create
   const [selectedArea, setSelectedArea] =
     useState<StorageArea>(defaultStorageArea);
-  const [selectedView, setSelectedView] = useState("Groceries");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [showCreateItem, setShowCreateItem] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null
   );
@@ -38,6 +47,7 @@ const Home: React.FC<HomeProps> = ({ token }) => {
   // Event handlers
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+    isSidebarOpen? handleViewSelect(selectedView) : handleViewSelect(defaultView);
   };
 
   const handleViewSelect = (view: string) => {
@@ -45,8 +55,9 @@ const Home: React.FC<HomeProps> = ({ token }) => {
     if (view != selectedView ){
       setSelectedView(view);
     } else {
-      setSelectedView("Groceries")
+      setSelectedView(defaultView);
     }
+    setShowCreateItem(false);
 
     const foundStorageArea = data.storageAreas.find(
       (storageArea) => storageArea.name === view
@@ -73,7 +84,6 @@ const Home: React.FC<HomeProps> = ({ token }) => {
     setShowCreateItem(true);
     setSelectedCategoryId(categoryId);
     setSelectedGroceryItem(item);
-    console.log("Category ID: " + categoryId + "\nGrocery Item: " + item.name);
   };
 
   const handleCancelCreateItem = () => {
@@ -91,11 +101,12 @@ const Home: React.FC<HomeProps> = ({ token }) => {
         };
 
         try {
-          const response = await fetch(url, getRequestOptions);
+          const response = await fetch(url + userEndpoint + userId, getRequestOptions);
           const json = await response.json();
           setData(json[0].userData);
         } catch (error) {
           console.error(error);
+          navigate("/login");
         }
       }
     };
@@ -169,10 +180,10 @@ const Home: React.FC<HomeProps> = ({ token }) => {
               groceryItem={
                 selectedGroceryItem !== null
                   ? {
-                      id: -1,
-                      name: "",
-                      purchaseDate: "",
-                      itemDuration: 0,
+                      id: selectedGroceryItem.id,
+                      name: selectedGroceryItem.name,
+                      purchaseDate: selectedGroceryItem.purchaseDate,
+                      itemDuration: selectedGroceryItem.itemDuration,
                     }
                   : null
               }
