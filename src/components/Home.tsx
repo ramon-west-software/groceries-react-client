@@ -143,8 +143,9 @@ const Home: React.FC<HomeProps> = ({ token }) => {
             </div>
           </div>
         </div>
-        {selectedArea.id != -1 && (
-          <div className={`main-content ${isSidebarOpen ? "show" : ""}`}>
+        <div className={`main-content ${isSidebarOpen ? "show" : ""}`}>
+          {selectedArea.id != -1 && (
+          
             <div className="main-card-container">
               {selectedArea.id != -1 && (
                 <Content
@@ -157,7 +158,7 @@ const Home: React.FC<HomeProps> = ({ token }) => {
                 />
               )}
             </div>
-          </div>
+          
         )}
 
         {showCreateItem && (
@@ -183,6 +184,7 @@ const Home: React.FC<HomeProps> = ({ token }) => {
           </div>
         )}
         {!showCreateItem && <div>Grocery List</div>}
+        </div>
       </div>
     </>
   );
