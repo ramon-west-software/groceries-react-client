@@ -35,24 +35,33 @@ const Home: React.FC<HomeProps> = ({ token }) => {
   const [selectedGroceryItem, setSelectedGroceryItem] =
     useState<GroceryItem | null>(null);
 
-
   // Event handlers
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
   const handleViewSelect = (view: string) => {
-    setSelectedView(view);
+    // set header title
+    if (view != selectedView ){
+      setSelectedView(view);
+    } else {
+      setSelectedView("Groceries")
+    }
 
     const foundStorageArea = data.storageAreas.find(
       (storageArea) => storageArea.name === view
     );
 
-    setSelectedArea(
-      foundStorageArea && foundStorageArea.id != -1
-        ? foundStorageArea
-        : defaultStorageArea
-    );
+    if (foundStorageArea != selectedArea) {
+      setSelectedArea(
+        foundStorageArea && foundStorageArea.id != -1
+          ? foundStorageArea
+          : defaultStorageArea
+      );
+    } else {
+      setSelectedArea(defaultStorageArea);
+    }
+    
   };
 
   const handleAddGroceryItemClick = () => {
@@ -134,20 +143,25 @@ const Home: React.FC<HomeProps> = ({ token }) => {
             </div>
           </div>
         </div>
-        <div className={`main-content ${isSidebarOpen ? "show" : ""}`}>
-          <div className="main-card-container">
-            {selectedArea.id != -1 && (
-              <Content
-                storageArea={
-                  selectedArea !== undefined ? selectedArea : defaultStorageArea
-                }
-                handleGroceryItemClick={handleGroceryItemClick}
-              />
-            )}
+        {selectedArea.id != -1 && (
+          <div className={`main-content ${isSidebarOpen ? "show" : ""}`}>
+            <div className="main-card-container">
+              {selectedArea.id != -1 && (
+                <Content
+                  storageArea={
+                    selectedArea !== undefined
+                      ? selectedArea
+                      : defaultStorageArea
+                  }
+                  handleGroceryItemClick={handleGroceryItemClick}
+                />
+              )}
+            </div>
           </div>
-        </div>
-        <div className="create-item-container">
-          {showCreateItem && (
+        )}
+
+        {showCreateItem && (
+          <div className="create-item-container">
             <CreateItems
               authToken={token || ""}
               userId={data.id.toString()}
@@ -166,8 +180,9 @@ const Home: React.FC<HomeProps> = ({ token }) => {
               }}
               onCancel={handleCancelCreateItem}
             />
-          )}
-        </div>
+          </div>
+        )}
+        {!showCreateItem && <div>Grocery List</div>}
       </div>
     </>
   );
