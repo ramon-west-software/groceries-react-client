@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import GroceryItemConponent from "./GroceryItemConponent";
 import { GroceryItem, StorageArea } from "./Interfaces";
 

@@ -16,7 +16,10 @@ const defaultStorageArea: StorageArea = {
   categories: [{ id: -1, name: "", groceryItems: [] }],
 };
 
-const url = "http://localhost:8080";
+const http = "http://";
+const server = "localhost";
+const port = ":8080";
+const url = http + server + port;
 const userEndpoint = "/api/v1/users/";
 const userId = "3";
 const defaultView = "Groceries";

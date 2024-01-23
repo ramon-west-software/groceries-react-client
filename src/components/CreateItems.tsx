@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
-import { UserData, GroceryItem } from "./Interfaces";
+import { GroceryItem } from "./Interfaces";
 
 interface CreateItemsProps {
   authToken: string;
@@ -9,7 +9,11 @@ interface CreateItemsProps {
   onCancel: () => void;
 }
 
-const ITEM_ENDPOINT = "http://localhost:8080/api/v1/items";
+const http = "http://";
+const server = "localhost";
+const port = ":8080";
+const url = http + server + port;
+const itemEndpoint = "/api/v1/items";
 
 const CreateItems: React.FC<CreateItemsProps> = ({
   authToken,
@@ -69,12 +73,12 @@ const CreateItems: React.FC<CreateItemsProps> = ({
     if (groceryItem !== null && groceryItem !== undefined) {
       const updatedItemData = { ...groceryItem, ...data };
       await createResource(
-        `${ITEM_ENDPOINT}/${groceryItem.id}`,
+        `${url + itemEndpoint}/${groceryItem.id}`,
         updatedItemData,
         "PUT"
       );
     } else {
-      await createResource(ITEM_ENDPOINT, data, "POST");
+      await createResource(url + itemEndpoint, data, "POST");
     }
   };
 

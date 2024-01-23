@@ -10,10 +10,16 @@ const Login: React.FC<LoginProps> = ({ setToken }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const http = "http://";
+  const server = "localhost";
+  const port = ":8080";
+  const url = http + server + port;
+  const loginEndpoint = "/api/v1/login";
+
   const handleLogin = async () => {
     try {
       // Call your server endpoint to authenticate
-      const response = await fetch("http://localhost:8080/api/v1/login", {
+      const response = await fetch(url + loginEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
