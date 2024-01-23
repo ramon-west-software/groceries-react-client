@@ -1,77 +1,121 @@
 import React, { useState, useEffect } from "react";
 import MenuToggle from "./MenuToggle";
 import Content from "./Content";
-import { StorageArea, UserData } from "./Interfaces";
+import CreateItems from "./CreateItems";
+import { GroceryItem, StorageArea, UserData } from "./Interfaces";
+import { useNavigate } from "react-router-dom";
 
-// default empty intefaces
 const defaultData: UserData = {
   id: 0,
   name: "Default",
   storageAreas: [],
 };
 const defaultStorageArea: StorageArea = {
-  id: 0,
+  id: -1,
   name: "Default",
-  categories: [],
+  categories: [{ id: -1, name: "", groceryItems: [] }],
 };
 
-// HTTP constants, todo: move to a property file
-const url = "http://localhost:8080/api/v1/users/3";
+const http = "http://";
+const server = "localhost";
+const port = ":8080";
+const url = http + server + port;
+const userEndpoint = "/api/v1/users/";
+const userId = "3";
+const defaultView = "Groceries";
 
 interface HomeProps {
   token: string | null;
 }
 
 const Home: React.FC<HomeProps> = ({ token }) => {
-  // Component state variables
+  // App states
+  const navigate = useNavigate();
   const [data, setData] = useState<UserData>(defaultData);
+  // Sidebar state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // Main content view state
+  const [selectedView, setSelectedView] = useState(defaultView);
+  // CreateItem vs GroceryList state
+  const [showCreateItem, setShowCreateItem] = useState(false);
+  // Selected components to edit/create
   const [selectedArea, setSelectedArea] =
     useState<StorageArea>(defaultStorageArea);
-  const [selectedView, setSelectedView] = useState("Groceries"); // Default view
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null
+  );
+  const [selectedGroceryItem, setSelectedGroceryItem] =
+    useState<GroceryItem | null>(null);
 
-  // Functions to handle state changes
+  // Event handlers
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+    isSidebarOpen? handleViewSelect(selectedView) : handleViewSelect(defaultView);
   };
 
-  // when a storage area is selected, find it in the data object and call setSelectedArea useState()
   const handleViewSelect = (view: string) => {
-    setSelectedView(view);
+    // set header title
+    if (view != selectedView ){
+      setSelectedView(view);
+    } else {
+      setSelectedView(defaultView);
+    }
+    setShowCreateItem(false);
 
     const foundStorageArea = data.storageAreas.find(
       (storageArea) => storageArea.name === view
     );
 
-    // set userData.StorageArea[i] if found, otherwise set default Storage Area
-    setSelectedArea(
-      foundStorageArea !== undefined ? foundStorageArea : defaultStorageArea
-    );
+    if (foundStorageArea != selectedArea) {
+      setSelectedArea(
+        foundStorageArea && foundStorageArea.id != -1
+          ? foundStorageArea
+          : defaultStorageArea
+      );
+    } else {
+      setSelectedArea(defaultStorageArea);
+    }
+    
+  };
+
+  const handleAddGroceryItemClick = () => {
+    setShowCreateItem(true);
+    setSelectedCategoryId(null);
+  };
+
+  const handleGroceryItemClick = (categoryId: number, item: GroceryItem) => {
+    setShowCreateItem(true);
+    setSelectedCategoryId(categoryId);
+    setSelectedGroceryItem(item);
+  };
+
+  const handleCancelCreateItem = () => {
+    setShowCreateItem(false);
   };
 
   useEffect(() => {
     const handleRequest = async () => {
-      // Check if the token is available before making the request
       if (token) {
         const getRequestOptions = {
           method: "GET",
           headers: {
-            Authorization: `${token}`, // Use the token obtained from login
+            Authorization: `${token}`,
           },
         };
 
         try {
-          const response = await fetch(url, getRequestOptions);
+          const response = await fetch(url + userEndpoint + userId, getRequestOptions);
           const json = await response.json();
           setData(json[0].userData);
         } catch (error) {
           console.error(error);
+          navigate("/login");
         }
       }
     };
 
-    handleRequest(); // Trigger the handleRequest function when the component is mounted or when the token changes
-  }, [token]); // The effect depends on the token, so it will run when the token changes
+    handleRequest();
+  }, [token]);
 
   return (
     <>
@@ -99,23 +143,62 @@ const Home: React.FC<HomeProps> = ({ token }) => {
                 </div>
               </div>
             ))}
+          <div
+            key={-1}
+            className="sidebar-card"
+            onClick={handleAddGroceryItemClick}
+          >
+            <div className="sidebar-card-title"></div>
+            <div className="sidebar-card-text">
+              <div className="fridge-icon"></div>
+            </div>
+            <div className="sidebar-card-footer">
+              <h3>Add Storage Area</h3>
+            </div>
+          </div>
         </div>
         <div className={`main-content ${isSidebarOpen ? "show" : ""}`}>
-          <div className="main-card-container">
-            {/* Render the content based on the selected view  */}
-            {
-              <Content
-                data={
-                  selectedArea !== undefined
-                    ? selectedArea.categories
-                    : defaultStorageArea.categories
-                }
-              />
-            }
-          </div>
+          {selectedArea.id != -1 && (
           
+            <div className="main-card-container">
+              {selectedArea.id != -1 && (
+                <Content
+                  storageArea={
+                    selectedArea !== undefined
+                      ? selectedArea
+                      : defaultStorageArea
+                  }
+                  handleGroceryItemClick={handleGroceryItemClick}
+                />
+              )}
+            </div>
+          
+        )}
+
+        {showCreateItem && (
+          <div className="create-item-container">
+            <CreateItems
+              authToken={token || ""}
+              userId={data.id.toString()}
+              groceryItem={
+                selectedGroceryItem !== null
+                  ? {
+                      id: selectedGroceryItem.id,
+                      name: selectedGroceryItem.name,
+                      purchaseDate: selectedGroceryItem.purchaseDate,
+                      itemDuration: selectedGroceryItem.itemDuration,
+                    }
+                  : null
+              }
+              triggerRefetch={() => {
+                setShowCreateItem(false);
+              }}
+              onCancel={handleCancelCreateItem}
+            />
+          </div>
+        )}
+        {!showCreateItem && <div>Grocery List</div>}
         </div>
-        <div className="create-item-container">placement holder for create items</div>
       </div>
     </>
   );
