@@ -3,21 +3,18 @@ import { GroceryItem } from "./Interfaces";
 
 interface CreateItemsProps {
   authToken: string;
-  userId: string;
+  categoryId: number | null;
   groceryItem?: GroceryItem | null;
   triggerRefetch: () => void;
   onCancel: () => void;
 }
-
-const http = "http://";
-const server = "localhost";
-const port = ":8080";
-const url = http + server + port;
-const itemEndpoint = "/api/v1/items";
+const server = import.meta.env.VITE_SERVER;
+const itemEndpoint = import.meta.env.VITE_ITEM_ENDPOINT;
+const url = server + itemEndpoint;
 
 const CreateItems: React.FC<CreateItemsProps> = ({
   authToken,
-  userId,
+  categoryId,
   groceryItem,
   triggerRefetch,
   onCancel,
@@ -34,6 +31,10 @@ const CreateItems: React.FC<CreateItemsProps> = ({
 
   const createResource = async (url: string, data: object, method: string) => {
     try {
+      // console.log(authToken);
+      // console.log(url);
+      console.log(data);
+      
       const response = await fetch(url, {
         method,
         headers: {
@@ -55,7 +56,10 @@ const CreateItems: React.FC<CreateItemsProps> = ({
       triggerRefetch();
       onCancel();
     } catch (error) {
-      console.error("Error creating/updating resource:", (error as Error).message);
+      console.error(
+        "Error creating/updating resource:",
+        (error as Error).message
+      );
     }
   };
 
@@ -63,22 +67,22 @@ const CreateItems: React.FC<CreateItemsProps> = ({
     e.preventDefault();
 
     const data = {
-      userId,
+      categoryId,
       itemId: itemId,
       name: itemName,
       itemDuration: parseInt(itemDuration, 10),
       purchaseDate,
     };
 
-    if (groceryItem !== null && groceryItem !== undefined) {
+    if (groceryItem !== null && groceryItem !== undefined && groceryItem.id != -1) {
       const updatedItemData = { ...groceryItem, ...data };
       await createResource(
-        `${url + itemEndpoint}/${groceryItem.id}`,
+        `${url}/${groceryItem.id}`,
         updatedItemData,
         "PUT"
       );
     } else {
-      await createResource(url + itemEndpoint, data, "POST");
+      await createResource(url, data, "POST");
     }
   };
 
@@ -147,7 +151,11 @@ const CreateItems: React.FC<CreateItemsProps> = ({
               {groceryItem ? "Update" : "Submit"}
             </button>
 
-            <button type="button" onClick={onCancel} className="login-form-input">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="login-form-input"
+            >
               Cancel
             </button>
           </form>
