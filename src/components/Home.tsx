@@ -16,11 +16,7 @@ const defaultStorageArea: StorageArea = {
   categories: [{ id: -1, name: "", groceryItems: [] }],
 };
 
-const http = "http://";
-const server = "localhost";
-const port = ":8080";
-const url = http + server + port;
-const userEndpoint = "/api/v1/users/";
+// TODO: get userId from the login payload
 const userId = "3";
 const defaultView = "Groceries";
 
@@ -29,9 +25,10 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ token }) => {
+  // User
+  const [userData, setUserData] = useState<UserData>(defaultData);
   // App states
   const navigate = useNavigate();
-  const [data, setData] = useState<UserData>(defaultData);
   // Sidebar state
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // Main content view state
@@ -50,19 +47,21 @@ const Home: React.FC<HomeProps> = ({ token }) => {
   // Event handlers
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
-    isSidebarOpen? handleViewSelect(selectedView) : handleViewSelect(defaultView);
+    isSidebarOpen
+      ? handleViewSelect(selectedView)
+      : handleViewSelect(defaultView);
   };
 
   const handleViewSelect = (view: string) => {
     // set header title
-    if (view != selectedView ){
+    if (view != selectedView) {
       setSelectedView(view);
     } else {
       setSelectedView(defaultView);
     }
     setShowCreateItem(false);
 
-    const foundStorageArea = data.storageAreas.find(
+    const foundStorageArea = userData.storageAreas.find(
       (storageArea) => storageArea.name === view
     );
 
@@ -75,7 +74,6 @@ const Home: React.FC<HomeProps> = ({ token }) => {
     } else {
       setSelectedArea(defaultStorageArea);
     }
-    
   };
 
   const handleAddGroceryItemClick = () => {
@@ -93,27 +91,29 @@ const Home: React.FC<HomeProps> = ({ token }) => {
     setShowCreateItem(false);
   };
 
-  useEffect(() => {
-    const handleRequest = async () => {
-      if (token) {
-        const getRequestOptions = {
-          method: "GET",
-          headers: {
-            Authorization: `${token}`,
-          },
-        };
+  const handleRequest = async () => {
+    if (token) {
+      const getRequestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: `${token}`,
+        },
+      };
 
-        try {
-          const response = await fetch(url + userEndpoint + userId, getRequestOptions);
-          const json = await response.json();
-          setData(json[0].userData);
-        } catch (error) {
-          console.error(error);
-          navigate("/login");
-        }
+      try {
+        const server = import.meta.env.VITE_SERVER;
+        const userDataEndpoint = import.meta.env.VITE_USER_ENDPOINT;
+        const fetchUser = server + userDataEndpoint + "/" + userId;
+        const response = await fetch(fetchUser, getRequestOptions);
+        const json = await response.json();
+        setUserData(json[0].userData);
+      } catch (error) {
+        console.error(error);
+        navigate("/login");
       }
-    };
-
+    }
+  };
+  useEffect(() => {
     handleRequest();
   }, [token]);
 
@@ -127,8 +127,8 @@ const Home: React.FC<HomeProps> = ({ token }) => {
       </div>
       <div className="container">
         <div className={`sidebar ${isSidebarOpen ? "show" : ""}`}>
-          {data &&
-            data.storageAreas.map((storageArea, index) => (
+          {userData &&
+            userData.storageAreas.map((storageArea, index) => (
               <div
                 key={index}
                 className="sidebar-card"
@@ -159,7 +159,6 @@ const Home: React.FC<HomeProps> = ({ token }) => {
         </div>
         <div className={`main-content ${isSidebarOpen ? "show" : ""}`}>
           {selectedArea.id != -1 && (
-          
             <div className="main-card-container">
               {selectedArea.id != -1 && (
                 <Content
@@ -172,32 +171,31 @@ const Home: React.FC<HomeProps> = ({ token }) => {
                 />
               )}
             </div>
-          
-        )}
+          )}
 
-        {showCreateItem && (
-          <div className="create-item-container">
-            <CreateItems
-              authToken={token || ""}
-              userId={data.id.toString()}
-              groceryItem={
-                selectedGroceryItem !== null
-                  ? {
-                      id: selectedGroceryItem.id,
-                      name: selectedGroceryItem.name,
-                      purchaseDate: selectedGroceryItem.purchaseDate,
-                      itemDuration: selectedGroceryItem.itemDuration,
-                    }
-                  : null
-              }
-              triggerRefetch={() => {
-                setShowCreateItem(false);
-              }}
-              onCancel={handleCancelCreateItem}
-            />
-          </div>
-        )}
-        {!showCreateItem && <div>Grocery List</div>}
+          {showCreateItem && (
+            <div className="create-item-container">
+              <CreateItems
+                authToken={token || ""}
+                categoryId={selectedCategoryId}
+                groceryItem={
+                  selectedGroceryItem !== null
+                    ? {
+                        id: selectedGroceryItem.id,
+                        name: selectedGroceryItem.name,
+                        purchaseDate: selectedGroceryItem.purchaseDate,
+                        itemDuration: selectedGroceryItem.itemDuration,
+                      }
+                    : null
+                }
+                triggerRefetch={() => {
+                  setShowCreateItem(false);
+                }}
+                onCancel={handleCancelCreateItem}
+              />
+            </div>
+          )}
+          {!showCreateItem && <div>Grocery List</div>}
         </div>
       </div>
     </>

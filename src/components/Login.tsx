@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface LoginProps {
@@ -8,41 +8,45 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({ setToken }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginUrl, setLoginUrl] = useState("");
   const navigate = useNavigate();
 
-  const http = "http://";
-  const server = "localhost";
-  const port = ":8080";
-  const url = http + server + port;
-  const loginEndpoint = "/api/v1/login";
+  useEffect(() => {
+    const server = import.meta.env.VITE_SERVER;
+    const loginEndpoint = import.meta.env.VITE_LOGIN_ENDPOINT;
+    const url = server + loginEndpoint;
+    setLoginUrl(url);
+  }, []);
 
   const handleLogin = async () => {
-    try {
-      // Call your server endpoint to authenticate
-      const response = await fetch(url + loginEndpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+    if (loginUrl) {
+      try {
+        // Call your server endpoint to authenticate
+        const response = await fetch(loginUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        });
 
-      if (response.ok) {
-        // Assuming the server responds with a JWT token
-        const data = await response.json();
-        const token = data.token;
+        if (response.ok) {
+          // Assuming the server responds with a JWT token
+          const data = await response.json();
+          const token = data.token;
 
-        // Store the token in your application state (or a global state management system)
-        setToken(token);
+          // Store the token in your application state (or a global state management system)
+          setToken(token);
 
-        // Redirect to the home page
-        navigate("/home");
-      } else {
-        // Handle login error
-        console.error("Login failed");
+          // Redirect to the home page
+          navigate("/home");
+        } else {
+          // Handle login error
+          console.error("Login failed");
+        }
+      } catch (error) {
+        console.error("Error during login:", error);
       }
-    } catch (error) {
-      console.error("Error during login:", error);
     }
   };
 
