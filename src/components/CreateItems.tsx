@@ -8,9 +8,7 @@ interface CreateItemsProps {
   triggerRefetch: () => void;
   onCancel: () => void;
 }
-const server = import.meta.env.VITE_SERVER;
-const itemEndpoint = import.meta.env.VITE_ITEM_ENDPOINT;
-const url = server + itemEndpoint;
+const itemsEndpoint = `${import.meta.env.VITE_SERVER}${import.meta.env.VITE_ITEM_ENDPOINT}`;
 
 const CreateItems: React.FC<CreateItemsProps> = ({
   authToken,
@@ -77,12 +75,12 @@ const CreateItems: React.FC<CreateItemsProps> = ({
     if (groceryItem !== null && groceryItem !== undefined && groceryItem.id != -1) {
       const updatedItemData = { ...groceryItem, ...data };
       await createResource(
-        `${url}/${groceryItem.id}`,
+        `${itemsEndpoint}/${groceryItem.id}`,
         updatedItemData,
         "PUT"
       );
     } else {
-      await createResource(url, data, "POST");
+      await createResource(itemsEndpoint, data, "POST");
     }
   };
 

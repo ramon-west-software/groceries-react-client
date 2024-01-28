@@ -101,10 +101,8 @@ const Home: React.FC<HomeProps> = ({ token }) => {
       };
 
       try {
-        const server = import.meta.env.VITE_SERVER;
-        const userDataEndpoint = import.meta.env.VITE_USER_ENDPOINT;
-        const fetchUser = server + userDataEndpoint + "/" + userId;
-        const response = await fetch(fetchUser, getRequestOptions);
+        const usersEndpoint = `${import.meta.env.VITE_SERVER}${import.meta.env.VITE_USER_ENDPOINT}/${userId}`;
+        const response = await fetch(usersEndpoint, getRequestOptions);
         const json = await response.json();
         setUserData(json[0].userData);
       } catch (error) {

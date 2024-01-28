@@ -12,10 +12,8 @@ const Login: React.FC<LoginProps> = ({ setToken }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const server = import.meta.env.VITE_SERVER;
-    const loginEndpoint = import.meta.env.VITE_LOGIN_ENDPOINT;
-    const url = server + loginEndpoint;
-    setLoginUrl(url);
+    const loginEndpoint = `${import.meta.env.VITE_SERVER}${import.meta.env.VITE_LOGIN_ENDPOINT}`;
+    setLoginUrl(loginEndpoint);
   }, []);
 
   const handleLogin = async () => {
