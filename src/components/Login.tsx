@@ -6,7 +6,7 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ setToken }) => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUrl, setLoginUrl] = useState("");
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const Login: React.FC<LoginProps> = ({ setToken }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ email, password }),
         });
 
         if (response.ok) {
@@ -58,12 +58,12 @@ const Login: React.FC<LoginProps> = ({ setToken }) => {
           <div>
             <form className="login-form">
               <label className="main-card-text">
-                Username:
+                Email:
                 <input
                   type="text"
                   className="login-form-input"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </label>
               <br />

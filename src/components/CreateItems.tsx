@@ -29,10 +29,6 @@ const CreateItems: React.FC<CreateItemsProps> = ({
 
   const createResource = async (url: string, data: object, method: string) => {
     try {
-      // console.log(authToken);
-      // console.log(url);
-      console.log(data);
-      
       const response = await fetch(url, {
         method,
         headers: {
