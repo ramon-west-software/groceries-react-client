@@ -17,14 +17,14 @@ const defaultStorageArea: StorageArea = {
 };
 
 // TODO: get userId from the login payload
-const userId = "3";
 const defaultView = "Groceries";
 
 interface HomeProps {
   token: string | null;
+  userId: number | null;
 }
 
-const Home: React.FC<HomeProps> = ({ token }) => {
+const Home: React.FC<HomeProps> = ({ token, userId}) => {
   // User
   const [userData, setUserData] = useState<UserData>(defaultData);
   // App states
