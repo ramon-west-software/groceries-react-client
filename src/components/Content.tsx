@@ -1,5 +1,5 @@
 import { FC } from "react";
-import GroceryItemConponent from "./GroceryItemConponent";
+import GroceryItemComponent from "./GroceryItemComponent";
 import { GroceryItem, StorageArea } from "./Interfaces";
 
 interface ContentProps {
@@ -18,7 +18,7 @@ const Content: FC<ContentProps> = ({ storageArea, handleGroceryItemClick }) => {
               <div className="main-card-title"> {category.name}</div>
             </div>
             <div className="main-card-text-container">
-              <GroceryItemConponent
+              <GroceryItemComponent
                 category={category}
                 handleGroceryItemClick={handleGroceryItemClick}
               />

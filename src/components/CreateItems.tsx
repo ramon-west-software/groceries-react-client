@@ -8,7 +8,9 @@ interface CreateItemsProps {
   triggerRefetch: () => void;
   onCancel: () => void;
 }
-const itemsEndpoint = `${import.meta.env.VITE_SERVER}${import.meta.env.VITE_ITEM_ENDPOINT}`;
+const itemsEndpoint = `${import.meta.env.VITE_SERVER}${
+  import.meta.env.VITE_ITEM_ENDPOINT
+}`;
 
 const CreateItems: React.FC<CreateItemsProps> = ({
   authToken,
@@ -28,15 +30,17 @@ const CreateItems: React.FC<CreateItemsProps> = ({
   const [isDataReady, setIsDataReady] = useState<boolean>(false);
 
   const createResource = async (url: string, data: object, method: string) => {
+    const requestOptions = {
+      method: `${method}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${authToken}`,
+      },
+      body: JSON.stringify(data),
+    };
+
     try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(url, requestOptions);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -46,7 +50,7 @@ const CreateItems: React.FC<CreateItemsProps> = ({
       }
 
       const responseData = await response.json();
-      console.log("Resource created/updated:", responseData);
+      console.log("Resource created/updated:", JSON.stringify(responseData[0]));
       triggerRefetch();
       onCancel();
     } catch (error) {
@@ -68,7 +72,11 @@ const CreateItems: React.FC<CreateItemsProps> = ({
       purchaseDate,
     };
 
-    if (groceryItem !== null && groceryItem !== undefined && groceryItem.id != -1) {
+    if (
+      groceryItem !== null &&
+      groceryItem !== undefined &&
+      groceryItem.id != -1
+    ) {
       const updatedItemData = { ...groceryItem, ...data };
       await createResource(
         `${itemsEndpoint}/${groceryItem.id}`,
