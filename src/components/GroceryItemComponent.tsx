@@ -6,7 +6,7 @@ interface GroceryItemsProps {
   handleGroceryItemClick: (categoryId: number, item: GroceryItem) => void;
 }
 
-const GroceryItemConponent: FC<GroceryItemsProps> = ({
+const GroceryItemComponent: FC<GroceryItemsProps> = ({
   category,
   handleGroceryItemClick,
 }) => {
@@ -56,4 +56,4 @@ const GroceryItemConponent: FC<GroceryItemsProps> = ({
   );
 };
 
-export default GroceryItemConponent;
+export default GroceryItemComponent;
