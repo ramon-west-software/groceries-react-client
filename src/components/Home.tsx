@@ -4,6 +4,7 @@ import Content from "./Content";
 import CreateItems from "./CreateItems";
 import { GroceryItem, StorageArea, UserData } from "./Interfaces";
 import { useNavigate } from "react-router-dom";
+import GroceryList from "../GroceryListComponent";
 
 const defaultData: UserData = {
   id: 0,
@@ -24,13 +25,15 @@ interface HomeProps {
   userId: number | null;
 }
 
-const Home: React.FC<HomeProps> = ({ token, userId}) => {
+const Home: React.FC<HomeProps> = ({ token, userId }) => {
   // User
   const [userData, setUserData] = useState<UserData>(defaultData);
   // App states
   const navigate = useNavigate();
   // Sidebar state
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // Content state
+  const [showContent, setShowContent] = useState(false);
   // Main content view state
   const [selectedView, setSelectedView] = useState(defaultView);
   // CreateItem vs GroceryList state
@@ -47,17 +50,16 @@ const Home: React.FC<HomeProps> = ({ token, userId}) => {
   // Event handlers
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
-    isSidebarOpen
-      ? handleViewSelect(selectedView)
-      : handleViewSelect(defaultView);
   };
 
   const handleViewSelect = (view: string) => {
     // set header title
     if (view != selectedView) {
       setSelectedView(view);
+      setShowContent(true);
     } else {
       setSelectedView(defaultView);
+      setShowContent(false);
     }
     setShowCreateItem(false);
 
@@ -101,7 +103,9 @@ const Home: React.FC<HomeProps> = ({ token, userId}) => {
       };
 
       try {
-        const usersEndpoint = `${import.meta.env.VITE_SERVER}${import.meta.env.VITE_USER_ENDPOINT}/${userId}`;
+        const usersEndpoint = `${import.meta.env.VITE_SERVER}${
+          import.meta.env.VITE_USER_ENDPOINT
+        }/${userId}`;
         const response = await fetch(usersEndpoint, getRequestOptions);
         const json = await response.json();
         setUserData(json[0].userData);
@@ -118,7 +122,12 @@ const Home: React.FC<HomeProps> = ({ token, userId}) => {
   return (
     <>
       <div className="header">
-        <button className="toggle-btn" onClick={toggleSidebar}>
+        <button
+          className="toggle-btn"
+          onClick={() => {
+            toggleSidebar();
+          }}
+        >
           <MenuToggle />
         </button>
         <h1>{selectedView}</h1>
@@ -130,15 +139,12 @@ const Home: React.FC<HomeProps> = ({ token, userId}) => {
               <div
                 key={index}
                 className="sidebar-card"
-                onClick={() => handleViewSelect(storageArea.name)}
+                onClick={() => {
+                  handleViewSelect(storageArea.name);
+                  toggleSidebar();
+                }}
               >
-                <div className="sidebar-card-title"></div>
-                <div className="sidebar-card-text">
-                  <div className="fridge-icon"></div>
-                </div>
-                <div className="sidebar-card-footer">
-                  <h3>{storageArea.name}</h3>
-                </div>
+                <div className="sidebar-card-title">{storageArea.name}</div>
               </div>
             ))}
           <div
@@ -146,17 +152,12 @@ const Home: React.FC<HomeProps> = ({ token, userId}) => {
             className="sidebar-card"
             onClick={handleAddGroceryItemClick}
           >
-            <div className="sidebar-card-title"></div>
-            <div className="sidebar-card-text">
-              <div className="fridge-icon"></div>
-            </div>
-            <div className="sidebar-card-footer">
-              <h3>Add Storage Area</h3>
-            </div>
+            <div className="sidebar-card-title">Add Storage Area</div>
+            <div className="sidebar-card-footer"></div>
           </div>
         </div>
         <div className={`main-content ${isSidebarOpen ? "show" : ""}`}>
-          {selectedArea.id != -1 && (
+          {showContent && (
             <div className="main-card-container">
               {selectedArea.id != -1 && (
                 <Content
@@ -193,7 +194,11 @@ const Home: React.FC<HomeProps> = ({ token, userId}) => {
               />
             </div>
           )}
-          {!showCreateItem && <div>Grocery List</div>}
+          {
+            <div className="grocery-list-container">
+              <GroceryList groceryList={[]} />
+            </div>
+          }
         </div>
       </div>
     </>
