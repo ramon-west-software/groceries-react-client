@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import MenuToggle from "./MenuToggle";
 import Content from "./Content";
 import CreateItems from "./CreateItems";
-import { GroceryItem, StorageArea, UserData } from "./Interfaces";
+import { Category, GroceryItem, StorageArea, UserData, Resource } from "./Interfaces";
 import { useNavigate } from "react-router-dom";
 import GroceryList from "../GroceryListComponent";
 import CreateFormComponent from "./CreateFormComponent";
@@ -48,6 +48,10 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
   const [selectedGroceryItem, setSelectedGroceryItem] =
     useState<GroceryItem | null>(null);
 
+  const [selectedResource, setSelectedResource] = useState<
+    Resource | null
+  >(null);
+
   // Event handlers
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -89,6 +93,13 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
     setSelectedCategoryId(categoryId);
     setSelectedGroceryItem(item);
   };
+
+  
+  const handleResourceClick = (resource: Resource) => {
+    setShowCreateItem(true);
+    setSelectedResource(resource);
+  };
+
 
   const handleCancelCreateItem = () => {
     setShowCreateItem(false);

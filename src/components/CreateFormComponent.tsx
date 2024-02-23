@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { Resource } from "./Interfaces";
 
 const storageEndpoint = `${import.meta.env.VITE_SERVER}${
   import.meta.env.VITE_STORAGE_ENDPOINT
@@ -9,16 +10,12 @@ const categoryEndpoint = `${import.meta.env.VITE_SERVER}${
 }`;
 
 // Data can represent Storage Area or Category
-interface Data {
-  parentId: number | null;
-  id: number;
-  name: string;
-}
+
 
 interface CreateFormComponentProps {
   authToken: string;
   formTitle: string;
-  resource?: Data | null;
+  resource?: Resource | null;
   triggerRefetch: () => void;
   onCancel: () => void;
 }

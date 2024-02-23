@@ -22,3 +22,9 @@ export interface UserData {
     name: string;
     storageAreas: StorageArea[];
 }
+
+export interface Resource {
+    parentId: number | null;
+    id: number;
+    name: string;
+  }
