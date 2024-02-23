@@ -5,6 +5,7 @@ import CreateItems from "./CreateItems";
 import { GroceryItem, StorageArea, UserData } from "./Interfaces";
 import { useNavigate } from "react-router-dom";
 import GroceryList from "../GroceryListComponent";
+import CreateFormComponent from "./CreateFormComponent";
 
 const defaultData: UserData = {
   id: 0,
@@ -194,6 +195,27 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
               />
             </div>
           )}
+          {
+            <div className="create-item-container">
+              <CreateFormComponent
+                authToken={token || ""}
+                formTitle="Title"
+                resource={
+                  selectedGroceryItem !== null
+                    ? {
+                        parentId: selectedCategoryId,
+                        id: selectedGroceryItem.id,
+                        name: selectedGroceryItem.name,
+                      }
+                    : null
+                }
+                triggerRefetch={() => {
+                  setShowCreateItem(false);
+                }}
+                onCancel={handleCancelCreateItem}
+              />
+            </div>
+          }
           {
             <div className="grocery-list-container">
               <GroceryList groceryList={[]} />
