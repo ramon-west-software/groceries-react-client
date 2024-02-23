@@ -23,8 +23,13 @@ export interface UserData {
     storageAreas: StorageArea[];
 }
 
+// Resource should replace GroceryItem, Category, and StorageArea
 export interface Resource {
+    type: string | null;
     parentId: number | null;
-    id: number;
-    name: string;
+    id: number | null;
+    name: string | null;
+    childResources: Resource[] | null;
+    purchaseDate: string | null;
+    expirationDate: string | null;
   }

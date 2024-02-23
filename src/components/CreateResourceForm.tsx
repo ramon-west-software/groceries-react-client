@@ -12,32 +12,27 @@ const categoryEndpoint = `${import.meta.env.VITE_SERVER}${
 // Data can represent Storage Area or Category
 
 
-interface CreateFormComponentProps {
+interface CreateResourceFormProps {
   authToken: string;
-  formTitle: string;
+  formTitle: string | null;
   resource?: Resource | null;
   triggerRefetch: () => void;
   onCancel: () => void;
 }
 
-const CreateFormComponent: React.FC<CreateFormComponentProps> = ({
+const CreateResourceForm: React.FC<CreateResourceFormProps> = ({
   authToken,
   formTitle,
   resource,
   //   triggerRefetch,
   onCancel,
 }) => {
-  console.log(authToken);
-  console.log(formTitle);
-  console.log(resource?.parentId);
-  console.log(resource?.id);
-  console.log(resource?.name);
 
   const [parentId, setParentId] = useState<number | null>(
     resource?.parentId || null
   );
   const [id, setId] = useState<number | null>(resource?.id || null);
-  const [name, setName] = useState<string>(resource?.name || "");
+  const [name, setName] = useState<string | null>(resource?.name || "");
 
   useEffect(() => {
     if (resource) {
@@ -50,7 +45,7 @@ const CreateFormComponent: React.FC<CreateFormComponentProps> = ({
   // Perform HTTP request
   const createResource = async (
     url: string,
-    resource: object,
+    resource: Resource,
     method: string
   ) => {
     const requestOptions = {
@@ -96,15 +91,15 @@ const CreateFormComponent: React.FC<CreateFormComponentProps> = ({
 
     let endpoint = "";
 
-    if (formTitle == "Create Storage Area") {
+    if (formTitle == `${import.meta.env.VITE_CATEGORY_TITLE}`) {
       endpoint = storageEndpoint;
     }
 
-    if (formTitle == "Create Category") {
+    if (formTitle == `${import.meta.env.VITE_CATEGORY_TITLE}`) {
       endpoint = categoryEndpoint;
     }
 
-    if (resource !== null && resource !== undefined && resource.id != -1) {
+    if (resource !== null && resource !== undefined && resource.id != null) {
       const updatedDataContent = { ...resource, ...content };
       await createResource(
         `${endpoint}/${resource.id}`,
@@ -112,7 +107,7 @@ const CreateFormComponent: React.FC<CreateFormComponentProps> = ({
         "PUT"
       );
     } else {
-      if (resource) await createResource(endpoint, resource, "POST");
+      if (resource && resource?.id == null) await createResource(endpoint, resource, "POST");
     }
   };
 
@@ -120,7 +115,7 @@ const CreateFormComponent: React.FC<CreateFormComponentProps> = ({
     <>
       <div className="main-card">
         <div className="main-card-header">
-          <div className="main-card-title"> New {formTitle}</div>
+          <div className="main-card-title"> New {resource?.type}</div>
         </div>
         <div className="main-card-text-container">
           <form className="login-form" onSubmit={handleSubmit}>
@@ -129,7 +124,7 @@ const CreateFormComponent: React.FC<CreateFormComponentProps> = ({
               <input
                 type="text"
                 className="login-form-input"
-                value={name}
+                value={name? name : ""}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setName(e.target.value)
                 }
@@ -138,7 +133,7 @@ const CreateFormComponent: React.FC<CreateFormComponentProps> = ({
             <br />
 
             <button type="submit" className="login-form-input">
-              {resource ? "Update" : "Submit"}
+              {resource?.name != null ? "Update" : "Submit"}
             </button>
 
             <button
@@ -156,4 +151,4 @@ const CreateFormComponent: React.FC<CreateFormComponentProps> = ({
   );
 };
 
-export default CreateFormComponent;
+export default CreateResourceForm;

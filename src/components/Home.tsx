@@ -2,10 +2,16 @@ import React, { useState, useEffect } from "react";
 import MenuToggle from "./MenuToggle";
 import Content from "./Content";
 import CreateItems from "./CreateItems";
-import { Category, GroceryItem, StorageArea, UserData, Resource } from "./Interfaces";
+import {
+  Category,
+  GroceryItem,
+  StorageArea,
+  UserData,
+  Resource,
+} from "./Interfaces";
 import { useNavigate } from "react-router-dom";
 import GroceryList from "../GroceryListComponent";
-import CreateFormComponent from "./CreateFormComponent";
+import CreateResourceForm from "./CreateResourceForm";
 
 const defaultData: UserData = {
   id: 0,
@@ -39,6 +45,8 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
   const [selectedView, setSelectedView] = useState(defaultView);
   // CreateItem vs GroceryList state
   const [showCreateItem, setShowCreateItem] = useState(false);
+  // Show createResource component
+  const [showCreateResource, setShowCreateResource] = useState(false);
   // Selected components to edit/create
   const [selectedArea, setSelectedArea] =
     useState<StorageArea>(defaultStorageArea);
@@ -48,9 +56,9 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
   const [selectedGroceryItem, setSelectedGroceryItem] =
     useState<GroceryItem | null>(null);
 
-  const [selectedResource, setSelectedResource] = useState<
-    Resource | null
-  >(null);
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(
+    null
+  );
 
   // Event handlers
   const toggleSidebar = () => {
@@ -94,15 +102,17 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
     setSelectedGroceryItem(item);
   };
 
-  
+  const handleCancelCreateItem = () => {
+    setShowCreateItem(false);
+  };
+
   const handleResourceClick = (resource: Resource) => {
-    setShowCreateItem(true);
+    setShowCreateResource(true);
     setSelectedResource(resource);
   };
 
-
-  const handleCancelCreateItem = () => {
-    setShowCreateItem(false);
+  const handleCancelCreateResource = () => {
+    setShowCreateResource(false);
   };
 
   const handleRequest = async () => {
@@ -179,6 +189,7 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
                       : defaultStorageArea
                   }
                   handleGroceryItemClick={handleGroceryItemClick}
+                  handleResourceClick={handleResourceClick}
                 />
               )}
             </div>
@@ -206,24 +217,16 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
               />
             </div>
           )}
-          {
+          { showCreateResource &&
             <div className="create-item-container">
-              <CreateFormComponent
+              <CreateResourceForm
                 authToken={token || ""}
-                formTitle="Title"
-                resource={
-                  selectedGroceryItem !== null
-                    ? {
-                        parentId: selectedCategoryId,
-                        id: selectedGroceryItem.id,
-                        name: selectedGroceryItem.name,
-                      }
-                    : null
-                }
+                formTitle={selectedResource?.type || null}
+                resource={selectedResource}
                 triggerRefetch={() => {
-                  setShowCreateItem(false);
+                  setShowCreateResource(false);
                 }}
-                onCancel={handleCancelCreateItem}
+                onCancel={handleCancelCreateResource}
               />
             </div>
           }
