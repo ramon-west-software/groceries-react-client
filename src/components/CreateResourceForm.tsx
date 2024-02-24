@@ -10,8 +10,6 @@ const categoryEndpoint = `${import.meta.env.VITE_SERVER}${
 }`;
 
 // Data can represent Storage Area or Category
-
-
 interface CreateResourceFormProps {
   authToken: string;
   formTitle: string | null;
@@ -27,7 +25,6 @@ const CreateResourceForm: React.FC<CreateResourceFormProps> = ({
   //   triggerRefetch,
   onCancel,
 }) => {
-
   const [parentId, setParentId] = useState<number | null>(
     resource?.parentId || null
   );
@@ -35,7 +32,7 @@ const CreateResourceForm: React.FC<CreateResourceFormProps> = ({
   const [name, setName] = useState<string | null>(resource?.name || "");
 
   useEffect(() => {
-    if (resource) {
+    if (resource?.name != null) {
       setParentId(resource.parentId);
       setId(resource.id);
       setName(resource.name);
@@ -83,6 +80,7 @@ const CreateResourceForm: React.FC<CreateResourceFormProps> = ({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    // represents resource updated by form input
     const content = {
       parentId,
       id: id,
@@ -98,16 +96,21 @@ const CreateResourceForm: React.FC<CreateResourceFormProps> = ({
     if (formTitle == `${import.meta.env.VITE_CATEGORY_TITLE}`) {
       endpoint = categoryEndpoint;
     }
-
-    if (resource !== null && resource !== undefined && resource.id != null) {
-      const updatedDataContent = { ...resource, ...content };
+    const updatedDataContent = { ...resource, ...(content as Resource) };
+    if (
+      updatedDataContent !== null &&
+      updatedDataContent !== undefined &&
+      updatedDataContent.id != null
+    ) {
       await createResource(
-        `${endpoint}/${resource.id}`,
+        `${endpoint}/${updatedDataContent.id}`,
         updatedDataContent,
         "PUT"
       );
     } else {
-      if (resource && resource?.id == null) await createResource(endpoint, resource, "POST");
+      if (updatedDataContent && updatedDataContent?.id == null) {
+        await createResource(endpoint, updatedDataContent, "POST");
+      }
     }
   };
 
@@ -124,10 +127,10 @@ const CreateResourceForm: React.FC<CreateResourceFormProps> = ({
               <input
                 type="text"
                 className="login-form-input"
-                value={name? name : ""}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setName(e.target.value)
-                }
+                value={name ? name : ""}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setName(e.target.value);
+                }}
               />
             </label>
             <br />

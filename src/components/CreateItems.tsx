@@ -64,6 +64,7 @@ const CreateItems: React.FC<CreateItemsProps> = ({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    // data represents grocery item updated by form input
     const data = {
       categoryId,
       itemId: itemId,
@@ -72,6 +73,7 @@ const CreateItems: React.FC<CreateItemsProps> = ({
       purchaseDate,
     };
 
+    // if groceryItem gets passed in (exists)
     if (
       groceryItem !== null &&
       groceryItem !== undefined &&
