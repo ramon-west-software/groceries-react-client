@@ -89,7 +89,7 @@ const CreateResourceForm: React.FC<CreateResourceFormProps> = ({
 
     let endpoint = "";
 
-    if (formTitle == `${import.meta.env.VITE_CATEGORY_TITLE}`) {
+    if (formTitle == `${import.meta.env.VITE_STORAGE_TITLE}`) {
       endpoint = storageEndpoint;
     }
 
@@ -118,7 +118,7 @@ const CreateResourceForm: React.FC<CreateResourceFormProps> = ({
     <>
       <div className="main-card">
         <div className="main-card-header">
-          <div className="main-card-title"> New {resource?.type}</div>
+          <div className="main-card-title"> {resource?.id != null ? "Edit" : "New"} {resource?.type}</div>
         </div>
         <div className="main-card-text-container">
           <form className="login-form" onSubmit={handleSubmit}>

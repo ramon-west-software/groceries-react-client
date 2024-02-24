@@ -3,7 +3,6 @@ import MenuToggle from "./MenuToggle";
 import Content from "./Content";
 import CreateItems from "./CreateItems";
 import {
-  Category,
   GroceryItem,
   StorageArea,
   UserData,
@@ -24,8 +23,8 @@ const defaultStorageArea: StorageArea = {
   categories: [{ id: -1, name: "", groceryItems: [] }],
 };
 
-// TODO: get userId from the login payload
-const defaultView = "Groceries";
+const type = `${import.meta.env.VITE_STORAGE_TITLE}`;
+const defaultView = `${import.meta.env.VITE_DEFAULT_TITLE}`;
 
 interface HomeProps {
   token: string | null;
@@ -89,11 +88,6 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
     } else {
       setSelectedArea(defaultStorageArea);
     }
-  };
-
-  const handleAddGroceryItemClick = () => {
-    setShowCreateItem(true);
-    setSelectedCategoryId(null);
   };
 
   const handleGroceryItemClick = (categoryId: number, item: GroceryItem) => {
@@ -164,6 +158,15 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
                 onClick={() => {
                   handleViewSelect(storageArea.name);
                   toggleSidebar();
+                  handleResourceClick({
+                    type: type || "Error",
+                    parentId: userId,
+                    id: storageArea.id,
+                    name: storageArea.name,
+                    childResources: null,
+                    purchaseDate: null,
+                    expirationDate: null,
+                  });
                 }}
               >
                 <div className="sidebar-card-title">{storageArea.name}</div>
@@ -172,7 +175,17 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
           <div
             key={-1}
             className="sidebar-card"
-            onClick={handleAddGroceryItemClick}
+            onClick={() => {
+              handleResourceClick({
+                type: type || "Error",
+                parentId: userId,
+                id: null,
+                name: null,
+                childResources: null,
+                purchaseDate: null,
+                expirationDate: null,
+              });
+            }}
           >
             <div className="sidebar-card-title">Add Storage Area</div>
             <div className="sidebar-card-footer"></div>
@@ -217,7 +230,7 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
               />
             </div>
           )}
-          { showCreateResource &&
+          {showCreateResource && (
             <div className="create-item-container">
               <CreateResourceForm
                 authToken={token || ""}
@@ -229,7 +242,7 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
                 onCancel={handleCancelCreateResource}
               />
             </div>
-          }
+          )}
           {
             <div className="grocery-list-container">
               <GroceryList groceryList={[]} />
