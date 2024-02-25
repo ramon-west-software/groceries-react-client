@@ -16,6 +16,7 @@ interface CreateResourceFormProps {
   resource?: Resource | null;
   triggerRefetch: () => void;
   onCancel: () => void;
+  handleRequest: () => void;
 }
 
 const CreateResourceForm: React.FC<CreateResourceFormProps> = ({
@@ -24,6 +25,7 @@ const CreateResourceForm: React.FC<CreateResourceFormProps> = ({
   resource,
   //   triggerRefetch,
   onCancel,
+  handleRequest
 }) => {
   const [parentId, setParentId] = useState<number | null>(
     resource?.parentId || null
@@ -56,6 +58,8 @@ const CreateResourceForm: React.FC<CreateResourceFormProps> = ({
 
     try {
       const response = await fetch(url, requestOptions);
+      // call this function to pull all data and re-render components!!
+      handleRequest();
 
       if (!response.ok) {
         const errorData = await response.json();
