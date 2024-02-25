@@ -2,12 +2,7 @@ import React, { useState, useEffect } from "react";
 import MenuToggle from "./MenuToggle";
 import Content from "./Content";
 import CreateItems from "./CreateItems";
-import {
-  GroceryItem,
-  StorageArea,
-  UserData,
-  Resource,
-} from "./Interfaces";
+import { GroceryItem, StorageArea, UserData, Resource } from "./Interfaces";
 import { useNavigate } from "react-router-dom";
 import GroceryList from "../GroceryListComponent";
 import CreateResourceForm from "./CreateResourceForm";
@@ -146,7 +141,22 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
         >
           <MenuToggle />
         </button>
-        <h1>{selectedView}</h1>
+        <h1
+          onClick={() => {
+            if (selectedView == selectedArea.name)
+            handleResourceClick({
+              type: type || "Error",
+              parentId: userId,
+              id: selectedArea.id,
+              name: selectedArea.name,
+              childResources: null,
+              purchaseDate: null,
+              expirationDate: null,
+            });
+          }}
+        >
+          {selectedView}
+        </h1>
       </div>
       <div className="container">
         <div className={`sidebar ${isSidebarOpen ? "show" : ""}`}>
@@ -158,15 +168,6 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
                 onClick={() => {
                   handleViewSelect(storageArea.name);
                   toggleSidebar();
-                  handleResourceClick({
-                    type: type || "Error",
-                    parentId: userId,
-                    id: storageArea.id,
-                    name: storageArea.name,
-                    childResources: null,
-                    purchaseDate: null,
-                    expirationDate: null,
-                  });
                 }}
               >
                 <div className="sidebar-card-title">{storageArea.name}</div>
