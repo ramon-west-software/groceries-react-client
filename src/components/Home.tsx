@@ -105,6 +105,7 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
   };
 
   const handleRequest = async () => {
+    console.log("handleRequest");
     if (token) {
       const getRequestOptions = {
         method: "GET",
@@ -126,6 +127,7 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
       }
     }
   };
+  
   useEffect(() => {
     handleRequest();
   }, [token]);
@@ -241,6 +243,7 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
                   setShowCreateResource(false);
                 }}
                 onCancel={handleCancelCreateResource}
+                handleRequest={handleRequest}
               />
             </div>
           )}
