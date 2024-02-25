@@ -98,6 +98,7 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
   const handleResourceClick = (resource: Resource) => {
     setShowCreateResource(true);
     setSelectedResource(resource);
+    setShowContent(true);
   };
 
   const handleCancelCreateResource = () => {
@@ -121,6 +122,7 @@ const Home: React.FC<HomeProps> = ({ token, userId }) => {
         const response = await fetch(usersEndpoint, getRequestOptions);
         const json = await response.json();
         setUserData(json[0].userData);
+        setShowCreateResource(false);
       } catch (error) {
         console.error(error);
         navigate("/login");
